@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola de DJ</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <div class="dj-console">
+        <!-- Cuadrícula de 3x3 para los botones de sonidos -->
+        <div class="sound-grid">
+            <div class="flex-items drum-pad" onclick="playSound('1')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('2')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('3')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('4')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('5')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('6')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('7')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('8')"></div>
+            <div class="flex-items drum-pad" onclick="playSound('9')"></div>
+        </div>
+
+        <!-- Botones de grabar, reproducir, detener y borrar -->
+        <div class="control-buttons">
+            <div class="flex-items record-button" onclick="toggleRecording()">Grabar</div>
+            <div class="flex-items play-button" onclick="playRecordedBeat()">Reproducir</div>
+            <div class="flex-items stop-button" onclick="stopSounds()">Detener</div>
+            <div class="flex-items delete-button" onclick="clearRecordedBeat()">Borrar</div>
+        </div>
+
+        <!-- Beat display debajo del botón de detener como?? -->
+        <div class="beat-display">
+            <p>Beat: <span id="beat-sequence"></span></p>
+        </div>
+    </div>
+
+    <script>
+        let beatSequence = [];
+        let isRecording = false;
+        let audioElements = [];
+
+        function playSound(sound) {
+            if (isRecording) {
+                beatSequence.push(sound);
+            }
+            const audio = new Audio(`sonidos/${sound}`);
+            audio.play();
+            audioElements.push(audio);
+            updateBeatDisplay();
+        }
+
+        function updateBeatDisplay() {
+            const beatDisplay = document.getElementById('beat-sequence');
+            beatDisplay.textContent = beatSequence.join(' - ');
+        }
+
+        function stopSounds() {
+            audioElements.forEach(audio => audio.pause());
+            audioElements = [];
+        }
+
+        function toggleRecording() {
+            isRecording = !isRecording;
+            if (isRecording) {
+                beatSequence = [];
+            }
+        }
+
+        function playRecordedBeat() {
+            if (beatSequence.length > 0) {
+                console.log('Reproducir beat grabado');
+                beatSequence.forEach((sound, index) => {
+                    setTimeout(() => {
+                        const audio = new Audio(`sonidos/${sound}`);
+                        audio.play();
+                    }, index * 1000);
+                });
+            } else {
+                console.log('No hay beat grabado');
+            }
+        }
+
+        function clearRecordedBeat() {
+        beatSequence = [];
+        updateBeatDisplay();
+    }
+    </script>
+</body>
+</html>
